@@ -1,0 +1,15 @@
+
+{
+  "name": "currentTime",
+  "version": "0.1",
+  "description": "这是一个显示当前时间的小扩展",
+  "browser_action": {
+    "default_icon":"images/clock.png",//icon组报错
+    "default_title": "currentTime",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab" //请求tab页面权限
+  ],
+  "manifest_version": 2
+}
