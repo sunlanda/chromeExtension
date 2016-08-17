@@ -12,8 +12,8 @@ function showTime(el) {
 	var h= today.getHours();
 	var m= today.getMinutes();
 	var s= today.getSeconds();
-	m=m>10?m:("0"+m);
-	s=s>10?s:("0"+s); //不严谨判断 10
+	m=m>=10?m:("0"+m);
+	s=s>=10?s:("0"+s); //不严谨判断 10
 	el.innerHTML =h+":"+m+":"+s;
 	setTimeout(function(){
 		showTime(el);
