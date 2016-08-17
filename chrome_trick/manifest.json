@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+  "name": "trick",
+  "version":"0.1",
+  "description":"baidu search btn trick/点不到的搜索按钮",
+  "content_scripts":[
+    {
+      "matches": ["*://www.baidu.com/"],
+      "js":["trick.js"]
+    }
+  ]
+}
+
