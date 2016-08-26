@@ -1,0 +1,17 @@
+{
+  "name":"eyeShield",
+  "description":"eyeShield",
+  "version":"0.1",
+  "permissions":[
+    "activeTab" //权限
+  ],
+  "background":{
+    "scripts":["bgc.js"],
+    "persistent":false  //是否持续(没用?)
+  },
+  "browser_action":{
+    "default_titie":"eyeShield"//一键护眼->屎绿色
+  },
+  "manifest_version":2
+
+}
