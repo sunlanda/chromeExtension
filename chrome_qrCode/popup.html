@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <title>qrcode</title>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <link href="https://cdn.bootcss.com/bootstrap-material-design/4.0.2/bootstrap-material-design.css" rel="stylesheet">
+    <style>
+    *{
+    	margin: 0;
+    	padding: 0;
+    }
+    body,html{
+        /*border:1px solid #ddd;*/
+    	width: 340px;
+    	height: 500px;
+    }
+    div{
+        color: yellowgreen;
+        font-size: 24px;
+        text-align: center;
+    }
+    .content{
+        padding:40px 0 10px 0;
+    }
+    .form-group{
+        padding:0 10px;
+    }
+
+    #qrBox{
+        height: 257px;
+        width: 257px;
+        display: inline-block;
+        border:1px solid #ddd;
+
+    }
+    </style>
+
+    <body>
+        <div class="content">
+		<div id="qrBox"></div>
+          <div class="form-group">
+                <label for="formGroupExampleInput">URL:</label>
+                <textarea autofocus maxlength="256"  required class="form-control" id="formGroupExampleInput"  style="resize:none" rows="4"></textarea>
+          </div>
+          <button type="button" class="btn btn-raised btn-success" id="parse">PARSE</button>
+      </div>        
+    </body>
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/jquery-qrcode.js"></script>
+    <script type="text/javascript" src="./js/qrcode.js"></script>
+</html>
