@@ -1,35 +1,41 @@
 #chromeExtension
 
 
-### ¼òÒª¼¼ÊõºÍÒªµã
-    chrome¿ª·¢¼¼Êõ html+css+js
-    browser action  //À©Õ¹À¸Í¼±ê
-    pages action //µØÖ·À¸Í¼±ê
-    popup //µ¯²ãÒ³Ãæ
-    background pages //ºóÌ¨¹¦ÄÜ
+### ç®€è¦æŠ€æœ¯å’Œè¦ç‚¹
 
-### ÏëÊµÏÖ¹¦ÄÜ
-    ½ØÍ¼screenshot
-    ÊÂ¼şÈÎÎñtodos
-    ¸ñÊ½»¯json
-    ÏÂÔØÒ³ÃæÄÚÍ¼Æ¬ downimg
-    ÈÕÆÚÌáĞÑcheckout
-    ÔÄ¶ÁÆ÷mainreader
-    Ò³ÃæÍ¨Ñ¶textcontact
-    Ô¶³ÌÊÓÆµskypecamera
-    ±¾µØºô³öÈÎÎñlocalevent
-    Ä£Äâ·ÃÎÊuseragent(ÊÓÆµÈ¥¹ã¸æ)
-    ²»Í¬ÊÓ´°·ÃÎÊweb inspector(pagex pagey)
-    Í¬²½µ÷ÊÔ sync
-    µ÷È¡apiÃ¿ÈÕĞ¡¹ÊÊÂ
-    ¼à¿ØÉÏÍøËÙ¶È
++ chromeå¼€å‘æŠ€æœ¯ html+css+js
++ browser action  //æ‰©å±•æ å›¾æ ‡
++ pages action //åœ°å€æ å›¾æ ‡
++ popup //å¼¹å±‚é¡µé¢
++ background pages //åå°åŠŸèƒ½
+
+### æƒ³å®ç°åŠŸèƒ½
+
++ [x] QR code ç½‘å€äºŒç»´ç  
++ [ ] QR code å›¾ç‰‡äºŒç»´ç  
++ ä¸‹è½½é¡µé¢å†…å›¾ç‰‡ downimg
++ æˆªå›¾screenshot
++ äº‹ä»¶ä»»åŠ¡todos
++ æ ¼å¼åŒ–json
++ æ—¥æœŸæé†’checkout
++ é˜…è¯»å™¨mainreader
++ é¡µé¢é€šè®¯textcontact
++ è¿œç¨‹è§†é¢‘skypecamera
++ æœ¬åœ°å‘¼å‡ºä»»åŠ¡localevent
++ æ¨¡æ‹Ÿè®¿é—®useragent(è§†é¢‘å»å¹¿å‘Š)
++ ä¸åŒè§†çª—è®¿é—®web inspector(pagex pagey)
++ åŒæ­¥è°ƒè¯• sync
++ è°ƒå–apiæ¯æ—¥å°æ•…äº‹
++ ç›‘æ§ä¸Šç½‘é€Ÿåº¦
   
-###Ê¹ÓÃµ½ÎÄµµºÍ×ÊÁÏ
+###ä½¿ç”¨åˆ°æ–‡æ¡£å’Œèµ„æ–™
 
-[3601](http://open.chrome.360.cn/extension_dev/overview.html)
+[360](http://open.chrome.360.cn/extension_dev/overview.html)
 
 [zhihu](https://www.zhihu.com/question/20179805)
 
-[¹¥ÂÔ](http://www.lupaworld.com/article-228139-1.html)
+[æ”»ç•¥](http://www.lupaworld.com/article-228139-1.html)
 
-[chrome¹Ù·½±¦µä](https://developer.chrome.com/extensions/samples#search:)
+[chromeå®˜æ–¹å®å…¸](https://developer.chrome.com/extensions/samples#search:)
+
+[chrome V3](https://developer.chrome.com/docs/extensions/mv3/overview/)

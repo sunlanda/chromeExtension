@@ -1,22 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-    <title>qrcode</title>
+    <title>QR code for Chrome Extension</title>
     <head>
         <meta charset="utf-8">
     </head>
     <link href="https://cdn.bootcss.com/bootstrap-material-design/4.0.2/bootstrap-material-design.css" rel="stylesheet">
     <style>
+        /* fallback */
+        @font-face {
+        font-family: 'Material Icons';
+        font-style: normal;
+        font-weight: 400;
+        src: url(https://fonts.gstatic.com/s/materialicons/v70/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+        }
+        .material-icons {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+        }
     *{
     	margin: 0;
     	padding: 0;
     }
     body,html{
-        /*border:1px solid #ddd;*/
+        background-color: #f2f2f2;
     	width: 340px;
-    	height: 500px;
+    	height: 540px;
+        padding: 0;
+        margin: 0;
+        line-height: 1;
     }
     div{
-        color: yellowgreen;
+        color: #4caf50;
         font-size: 24px;
         text-align: center;
     }
@@ -28,11 +53,13 @@
     }
 
     #qrBox{
-        height: 257px;
-        width: 257px;
         display: inline-block;
-        border:1px solid #ddd;
-
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 5%;
+    }
+    .material-icons{
+        font-size: 14px;
     }
     </style>
 
@@ -40,10 +67,17 @@
         <div class="content">
 		<div id="qrBox"></div>
           <div class="form-group">
-                <label for="formGroupExampleInput">URL:</label>
-                <textarea autofocus maxlength="256"  required class="form-control" id="formGroupExampleInput"  style="resize:none" rows="4"></textarea>
+                <label for="urlTextarea">URL:</label>
+                <textarea autofocus maxlength="256"  required class="form-control" id="urlTextarea"  style="resize:none" rows="4"></textarea>
           </div>
-          <button type="button" class="btn btn-raised btn-success" id="parse">PARSE</button>
+          <button type="button" class="btn btn-sm btn-raised btn-success" id="dl_png">
+              <i class="material-icons left">file_download</i>
+              PNG
+            </button>
+          <button type="button" class="btn btn-sm btn-raised btn-success" id="dl_jpg">
+              <i class="material-icons left">file_download</i>
+              JPG
+            </button>
       </div>        
     </body>
     <script type="text/javascript" src="./js/jquery.js"></script>

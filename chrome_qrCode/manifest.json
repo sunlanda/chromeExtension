@@ -1,20 +1,21 @@
 
 {
-  "name": "qrCode",
-  "version": "0.2",
-  "description": "当前网址转为二维码",
+  "name": "big QR code",
+  "version": "0.1.3",
+  "description": "将当前网址转为二维码",
   "browser_action": {
     "default_icon":"images/qrcode.png",
-    "default_title": "qrCode",
+    "default_title": "big QR code",
     "default_popup": "popup.html"
   },
   "background": {
         "scripts": ["js/background.js"]
     },
   "permissions": [
-    "activeTab", //访问当前活动选项卡
-    "tabs" //访问浏览器选项卡
+    "activeTab",
+    "tabs"
   ],
+  "devtools_page": "popup.html",
   "manifest_version": 2
 }
 
