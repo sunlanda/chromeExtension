@@ -1,86 +1,800 @@
 <!DOCTYPE html>
-<html lang="en">
-    <title>QR code for Chrome Extension</title>
-    <head>
-        <meta charset="utf-8">
-    </head>
-    <link href="https://cdn.bootcss.com/bootstrap-material-design/4.0.2/bootstrap-material-design.css" rel="stylesheet">
-    <style>
-        /* fallback */
-        @font-face {
-        font-family: 'Material Icons';
-        font-style: normal;
-        font-weight: 400;
-        src: url(https://fonts.gstatic.com/s/materialicons/v70/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
-        }
-        .material-icons {
-        font-family: 'Material Icons';
-        font-weight: normal;
-        font-style: normal;
-        font-size: 24px;
-        line-height: 1;
-        letter-spacing: normal;
-        text-transform: none;
-        display: inline-block;
-        white-space: nowrap;
-        word-wrap: normal;
-        direction: ltr;
-        -webkit-font-feature-settings: 'liga';
-        -webkit-font-smoothing: antialiased;
-        }
-    *{
-    	margin: 0;
-    	padding: 0;
-    }
-    body,html{
-        background-color: #f2f2f2;
-    	width: 340px;
-    	height: 540px;
-        padding: 0;
-        margin: 0;
-        line-height: 1;
-    }
-    div{
-        color: #4caf50;
-        font-size: 24px;
-        text-align: center;
-    }
-    .content{
-        padding:40px 0 10px 0;
-    }
-    .form-group{
-        padding:0 10px;
-    }
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>big QR code</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    #qrBox{
-        display: inline-block;
-        background-color: #fff;
-        padding: 10px;
-        border-radius: 5%;
-    }
-    .material-icons{
-        font-size: 14px;
-    }
-    </style>
+  :root {
+    --primary: #0A7EA5;
+    --primary-light: #1A9FC4;
+    --primary-dark: #066580;
+    --bg: #F0F4F8;
+    --surface: #FFFFFF;
+    --border: #D1DEE8;
+    --text: #1A2332;
+    --text-muted: #6B7A8C;
+    --text-light: #9AABB8;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.14);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+  }
 
-    <body>
-        <div class="content">
-		<div id="qrBox"></div>
-          <div class="form-group">
-                <label for="urlTextarea">URL:</label>
-                <textarea autofocus maxlength="256"  required class="form-control" id="urlTextarea"  style="resize:none" rows="4"></textarea>
-          </div>
-          <button type="button" class="btn btn-sm btn-raised btn-success" id="dl_png">
-              <i class="material-icons left">file_download</i>
-              PNG
-            </button>
-          <button type="button" class="btn btn-sm btn-raised btn-success" id="dl_jpg">
-              <i class="material-icons left">file_download</i>
-              JPG
-            </button>
-      </div>        
-    </body>
-    <script type="text/javascript" src="./js/jquery.js"></script>
-    <script type="text/javascript" src="./js/jquery-qrcode.js"></script>
-    <script type="text/javascript" src="./js/qrcode.js"></script>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    width: 380px;
+    min-height: 540px;
+    overflow-x: hidden;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 16px 20px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    right: -20px; top: -20px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.06);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    right: 30px; bottom: -30px;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.04);
+  }
+  .header-icon {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,.15);
+    border-radius: var(--radius-xs);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .header-icon svg { width: 20px; height: 20px; }
+  .header-text { position: relative; z-index: 1; }
+  .header-title { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -.2px; }
+  .header-sub { font-size: 11px; color: rgba(255,255,255,.65); margin-top: 1px; }
+
+  /* ─── TABS ─── */
+  .tabs {
+    display: flex;
+    padding: 10px 12px 0;
+    gap: 4px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color .2s, background .2s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .tab-btn:hover { color: var(--primary); background: rgba(10,126,165,.06); }
+  .tab-btn.active { color: var(--primary); background: var(--bg); font-weight: 600; }
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 2px;
+    background: var(--primary);
+    border-radius: 2px 2px 0 0;
+  }
+  .tab-btn svg { width: 16px; height: 16px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ─── CONTENT ─── */
+  .content { padding: 12px; }
+
+  /* ─── INPUT SECTION ─── */
+  .input-section { margin-bottom: 10px; }
+  .input-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .char-count { font-weight: 400; color: var(--text-light); text-transform: none; }
+  .url-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    resize: none;
+    min-height: 72px;
+    line-height: 1.5;
+  }
+  .url-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(10,126,165,.12);
+  }
+  .input-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .icon-btn {
+    flex: 1;
+    padding: 6px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: all .2s;
+  }
+  .icon-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(10,126,165,.04); }
+  .icon-btn svg { width: 14px; height: 14px; }
+
+  /* ─── PREVIEW SECTION ─── */
+  .preview-wrap {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+    min-height: 200px;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  .preview-wrap:hover { border-color: var(--primary-light); }
+  #previewBox { position: relative; }
+  .preview-wrap.border-visible::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 3px dashed rgba(10,126,165,.35);
+    border-radius: calc(var(--radius) + 4px);
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity .2s;
+  }
+  .preview-wrap .tooltip-badge {
+    position: absolute;
+    bottom: 6px; right: 6px;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity .2s;
+    pointer-events: none;
+    font-weight: 500;
+  }
+  .preview-wrap:hover .tooltip-badge { opacity: 1; }
+  .preview-empty {
+    color: var(--text-light);
+    font-size: 13px;
+    text-align: center;
+  }
+  .preview-empty svg { width: 32px; height: 32px; margin-bottom: 6px; opacity: .4; }
+
+  /* ─── SETTINGS GRID ─── */
+  .settings-section { margin-bottom: 10px; }
+  .settings-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .settings-title svg { width: 14px; height: 14px; color: var(--primary); }
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .setting-row { display: flex; flex-direction: column; gap: 4px; }
+  .setting-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+  .setting-input {
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xs);
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    transition: border-color .2s;
+    width: 100%;
+  }
+  .setting-input:focus { border-color: var(--primary); }
+  .setting-input[type="color"] { padding: 3px 6px; height: 34px; cursor: pointer; }
+
+  /* ─── SLIDER ─── */
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    outline: none;
+    transition: background .2s;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(10,126,165,.4);
+    transition: transform .15s;
+  }
+  .slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .slider-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    min-width: 32px;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ─── TOGGLE ─── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 10px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xs);
+  }
+  .toggle-text { font-size: 12px; font-weight: 500; color: var(--text); }
+  .toggle {
+    position: relative;
+    width: 38px; height: 22px;
+    flex-shrink: 0;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    border-radius: 11px;
+    background: var(--border);
+    cursor: pointer;
+    transition: background .25s;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    left: 3px; top: 3px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    transition: transform .25s;
+  }
+  .toggle input:checked + .toggle-slider { background: var(--primary); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+  /* ─── EXPORT SECTION ─── */
+  .export-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .export-btn {
+    padding: 10px 8px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all .2s;
+  }
+  .export-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(10,126,165,.04);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  .export-btn svg { width: 18px; height: 18px; }
+  .export-btn.full-width {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: center;
+    padding: 9px;
+  }
+
+  /* ─── BARCODE SETTINGS ─── */
+  .barcode-type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+  .barcode-type-btn {
+    padding: 7px 8px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-align: center;
+    transition: all .2s;
+  }
+  .barcode-type-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .barcode-type-btn.active {
+    border-color: var(--primary);
+    background: rgba(10,126,165,.08);
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1A2332;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: var(--shadow-md);
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    z-index: 1000;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+      <rect x="3" y="3" width="7" height="7" rx="1"/>
+      <rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/>
+      <rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <div class="header-title">big QR code</div>
+    <div class="header-sub">二维码 &amp; 条形码生成器</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" data-tab="qrcode">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="7" height="7" rx="1"/>
+      <rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/>
+      <path d="M14 14h2v2h-2zM14 17h2v1h-2zM17 14h1v2h-1zM17 17h1v1h-1z"/>
+    </svg>
+    二维码
+  </button>
+  <button class="tab-btn" data-tab="barcode">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 6h2M8 6h1M10 6h2M13 6h1M15 6h2M18 6h2M4 10h20M4 14h20"/>
+    </svg>
+    条形码
+  </button>
+  <button class="tab-btn" data-tab="settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+    </svg>
+    设置
+  </button>
+</div>
+
+<!-- ── QR CODE TAB ── -->
+<div class="tab-panel active" id="tab-qrcode">
+  <div class="content">
+    <!-- Input -->
+    <div class="input-section">
+      <div class="input-label">
+        内容
+        <span class="char-count"><span id="charCount">0</span> / 2048</span>
+      </div>
+      <textarea id="qrText" class="url-input" placeholder="输入文本、网址或其他内容..."></textarea>
+      <div class="input-actions">
+        <button class="icon-btn" id="pasteBtn" title="粘贴">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+          粘贴
+        </button>
+        <button class="icon-btn" id="clearBtn" title="清空">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+          清空
+        </button>
+        <button class="icon-btn" id="copyBtn" title="复制内容">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          复制
+        </button>
+        <button class="icon-btn" id="useUrlBtn" title="使用当前网址">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          网址
+        </button>
+      </div>
+    </div>
+
+    <!-- QR Code Preview -->
+    <div class="preview-wrap" id="qrPreviewWrap" title="点击复制图片">
+      <div id="previewBox">
+        <div class="preview-empty" id="qrEmpty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2zM14 17h2v1h-2zM17 14h1v2h-1zM17 17h1v1h-1z"/></svg>
+          <div>输入内容生成二维码</div>
+        </div>
+        <canvas id="qrCanvas" style="display:none;"></canvas>
+      </div>
+      <div class="tooltip-badge" id="qrPreviewBadge">点击复制</div>
+    </div>
+
+    <!-- Export Buttons -->
+    <div class="export-section">
+      <button class="export-btn" id="dlPng">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        PNG
+      </button>
+      <button class="export-btn" id="dlJpg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        JPG
+      </button>
+      <button class="export-btn" id="dlSvg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        SVG
+      </button>
+    </div>
+
+    <!-- Quick Settings -->
+    <div class="settings-section">
+      <div class="settings-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        样式
+      </div>
+      <div class="settings-grid">
+        <div class="setting-row">
+          <label class="setting-label">前景色</label>
+          <input type="color" class="setting-input" id="qrFgColor" value="#000000">
+        </div>
+        <div class="setting-row">
+          <label class="setting-label">背景色</label>
+          <input type="color" class="setting-input" id="qrBgColor" value="#ffffff">
+        </div>
+        <div class="setting-row">
+          <label class="setting-label">大小 (px)</label>
+          <input type="number" class="setting-input" id="qrSize" value="180" min="80" max="400" step="10">
+        </div>
+        <div class="setting-row">
+          <label class="setting-label">纠错级别</label>
+          <select class="setting-input" id="qrEcLevel">
+            <option value="L">L — 低 (7%)</option>
+            <option value="M" selected>M — 中 (15%)</option>
+            <option value="Q">Q — 高 (25%)</option>
+            <option value="H">H — 最高 (30%)</option>
+          </select>
+        </div>
+      </div>
+      <!-- Border Radius -->
+      <div style="margin-top:8px;">
+        <div class="setting-label" style="margin-bottom:5px;">圆角 (border-radius)</div>
+        <div class="slider-row">
+          <input type="range" class="slider" id="qrRadius" min="0" max="60" value="0">
+          <span class="slider-value" id="qrRadiusVal">0px</span>
+        </div>
+      </div>
+      <!-- Logo -->
+      <div style="margin-top:8px;">
+        <div class="toggle-row">
+          <span class="toggle-text">显示中心 Logo 区域</span>
+          <label class="toggle">
+            <input type="checkbox" id="qrLogoToggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── BARCODE TAB ── -->
+<div class="tab-panel" id="tab-barcode">
+  <div class="content">
+    <!-- Input -->
+    <div class="input-section">
+      <div class="input-label">
+        内容
+        <span class="char-count"><span id="bcCharCount">0</span> / 100</span>
+      </div>
+      <textarea id="bcText" class="url-input" placeholder="输入数字或文本（根据条码类型限制）..."></textarea>
+    </div>
+
+    <!-- Barcode Type Selector -->
+    <div class="settings-section">
+      <div class="settings-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h2M8 6h1M10 6h2M13 6h1M15 6h2M18 6h2M4 10h20M4 14h20"/></svg>
+        条码类型
+      </div>
+      <div class="barcode-type-grid">
+        <button class="barcode-type-btn active" data-type="CODE128">CODE128</button>
+        <button class="barcode-type-btn" data-type="CODE39">CODE39</button>
+        <button class="barcode-type-btn" data-type="EAN13">EAN-13</button>
+        <button class="barcode-type-btn" data-type="EAN8">EAN-8</button>
+        <button class="barcode-type-btn" data-type="UPC">UPC-A</button>
+        <button class="barcode-type-btn" data-type="ITF14">ITF-14</button>
+        <button class="barcode-type-btn" data-type="CODABAR">CODABAR</button>
+        <button class="barcode-type-btn" data-type="PHARMACODE">Pharmacode</button>
+      </div>
+    </div>
+
+    <!-- Barcode Preview -->
+    <div class="preview-wrap" id="bcPreviewWrap" title="点击复制图片">
+      <div id="bcPreviewBox">
+        <div class="preview-empty" id="bcEmpty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h2M8 6h1M10 6h2M13 6h1M15 6h2M18 6h2M4 10h20M4 14h20"/></svg>
+          <div>输入内容生成条形码</div>
+        </div>
+        <svg id="bcSvg" style="display:none;"></svg>
+      </div>
+      <div class="tooltip-badge" id="bcPreviewBadge">点击复制</div>
+    </div>
+
+    <!-- Export -->
+    <div class="export-section">
+      <button class="export-btn" id="bcPng">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        PNG
+      </button>
+      <button class="export-btn" id="bcSvgBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        SVG
+      </button>
+      <button class="export-btn" id="bcCopy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        复制
+      </button>
+    </div>
+
+    <!-- Barcode Settings -->
+    <div class="settings-section">
+      <div class="settings-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        条码样式
+      </div>
+      <div class="settings-grid">
+        <div class="setting-row">
+          <label class="setting-label">前景色</label>
+          <input type="color" class="setting-input" id="bcFgColor" value="#000000">
+        </div>
+        <div class="setting-row">
+          <label class="setting-label">背景色</label>
+          <input type="color" class="setting-input" id="bcBgColor" value="#ffffff">
+        </div>
+        <div class="setting-row">
+          <label class="setting-label">高度 (px)</label>
+          <input type="number" class="setting-input" id="bcHeight" value="80" min="40" max="200" step="5">
+        </div>
+        <div class="setting-row">
+          <label class="setting-label">窄条宽度</label>
+          <input type="number" class="setting-input" id="bcBarWidth" value="2" min="1" max="6" step="1">
+        </div>
+      </div>
+      <!-- Border Radius -->
+      <div style="margin-top:8px;">
+        <div class="setting-label" style="margin-bottom:5px;">圆角 (border-radius)</div>
+        <div class="slider-row">
+          <input type="range" class="slider" id="bcRadius" min="0" max="30" value="0">
+          <span class="slider-value" id="bcRadiusVal">0px</span>
+        </div>
+      </div>
+      <!-- Show text toggle -->
+      <div style="margin-top:6px;">
+        <div class="toggle-row">
+          <span class="toggle-text">显示条码文字</span>
+          <label class="toggle">
+            <input type="checkbox" id="bcShowText" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <!-- Transparent BG -->
+      <div>
+        <div class="toggle-row">
+          <span class="toggle-text">透明背景</span>
+          <label class="toggle">
+            <input type="checkbox" id="bcTransparent">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SETTINGS TAB ── -->
+<div class="tab-panel" id="tab-settings">
+  <div class="content">
+    <div class="settings-section">
+      <div class="settings-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        全局设置
+      </div>
+
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <span class="toggle-text">记住上次内容</span>
+        <label class="toggle">
+          <input type="checkbox" id="rememberText" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <span class="toggle-text">半透明模式</span>
+        <label class="toggle">
+          <input type="checkbox" id="translucentMode">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <span class="toggle-text">显示虚线边界</span>
+        <label class="toggle">
+          <input type="checkbox" id="showBorder">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <span class="toggle-text">自动获取当前网址</span>
+        <label class="toggle">
+          <input type="checkbox" id="autoUrl" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div style="margin-top:12px;">
+        <div class="setting-label" style="margin-bottom:5px;">默认导出格式</div>
+        <select class="setting-input" id="defaultFormat">
+          <option value="png" selected>PNG</option>
+          <option value="jpg">JPG</option>
+          <option value="svg">SVG</option>
+        </select>
+      </div>
+
+      <div style="margin-top:8px;">
+        <div class="setting-label" style="margin-bottom:5px;">默认尺寸</div>
+        <div class="slider-row">
+          <input type="range" class="slider" id="defaultSize" min="100" max="600" value="300">
+          <span class="slider-value" id="defaultSizeVal">300px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data + Code Display -->
+    <div class="settings-section">
+      <div class="settings-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        内容展示
+      </div>
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <span class="toggle-text">显示数据预览卡片</span>
+        <label class="toggle">
+          <input type="checkbox" id="showDataCard">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row" style="margin-bottom:8px;">
+        <span class="toggle-text">数据区域显示边框</span>
+        <label class="toggle">
+          <input type="checkbox" id="dataCardBorder">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div style="margin-top:8px;">
+        <div class="setting-label" style="margin-bottom:5px;">数据卡片圆角</div>
+        <div class="slider-row">
+          <input type="range" class="slider" id="dataCardRadius" min="0" max="24" value="8">
+          <span class="slider-value" id="dataCardRadiusVal">8px</span>
+        </div>
+      </div>
+      <div style="margin-top:8px;">
+        <div class="setting-label" style="margin-bottom:5px;">数据卡片字号</div>
+        <div class="slider-row">
+          <input type="range" class="slider" id="dataCardFontSize" min="10" max="18" value="12">
+          <span class="slider-value" id="dataCardFontSizeVal">12px</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="export-btn full-width" id="resetSettings" style="margin-bottom:8px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+      恢复默认设置
+    </button>
+
+    <div style="text-align:center;color:var(--text-light);font-size:11px;padding:4px 0 12px;">
+      big QR code v1.0.0 &mdash; Manifest V3
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- SCRIPTS -->
+  <script src="js/qrcodejs.min.js"></script>
+<script src="js/JsBarcode.all.min.js"></script>
+<script src="js/popup.js"></script>
+</body>
 </html>
